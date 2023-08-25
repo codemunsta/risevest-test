@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/codemunsta/risevest-test/src/db"
 	"github.com/codemunsta/risevest-test/src/routers"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
@@ -17,11 +18,13 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	db.InitDB()
+
 	fmt.Println("Server Starting Up")
 
 	router := routers.NewRouter()
 	http.Handle("/", router)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":3000", nil)
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
