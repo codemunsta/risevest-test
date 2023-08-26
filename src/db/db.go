@@ -19,7 +19,7 @@ var Database DBInstance
 
 func InitDB() {
 	dsn := fmt.Sprintf(
-		"host=db user=%s password=%s dbname=%s port=5432 sslmode=disabled TimeZone=Africa/Lagos",
+		"host=db user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=Africa/Lagos",
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_NAME"),
