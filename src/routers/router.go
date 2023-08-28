@@ -12,5 +12,14 @@ func NewRouter() *mux.Router {
 	fileServer := http.FileServer(http.Dir("./static"))
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fileServer))
 	router.HandleFunc("/api/ping", h.NewApi).Methods(http.MethodGet)
+	router.HandleFunc("/api/get_user", h.TestUserAuth).Methods(http.MethodGet)
+
+	// registeration
+	router.HandleFunc("/api/user/register", h.Register).Methods(http.MethodPost)
+	router.HandleFunc("/api/admin/register", h.RegisterAdmin).Methods(http.MethodPost)
+
+	// login
+	router.HandleFunc("/api/user/login", h.LoginAuthentication).Methods(http.MethodPost)
+	router.HandleFunc("/api/admin/login", h.LoginAdmin).Methods(http.MethodPost)
 	return router
 }

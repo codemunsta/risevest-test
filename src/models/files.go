@@ -8,6 +8,7 @@ type File struct {
 	FileName   string
 	FilePath   string
 	UserID     uint
+	Safe       bool
 }
 
 type Folder struct {

@@ -18,6 +18,7 @@ type DBInstance struct {
 var Database DBInstance
 
 func InitDB() {
+	fmt.Println("Hey there")
 	dsn := fmt.Sprintf(
 		"host=db user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=Africa/Lagos",
 		os.Getenv("DB_USER"),
@@ -35,7 +36,7 @@ func InitDB() {
 
 	db.Logger = logger.Default.LogMode(logger.Info)
 	log.Println("Running Migrations")
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.User{}, &models.Admin{})
 
 	Database = DBInstance{
 		DB: db,

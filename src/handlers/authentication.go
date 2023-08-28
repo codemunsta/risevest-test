@@ -12,8 +12,8 @@ import (
 )
 
 type LoginStruct struct {
-	Email    string
-	Password string
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 func Register(writer http.ResponseWriter, request *http.Request) {
@@ -60,6 +60,7 @@ func RegisterAdmin(writer http.ResponseWriter, request *http.Request) {
 			return
 		}
 		newAdmin.Password = string(hashedPassword)
+		newAdmin.Role = "admin"
 
 		db.Database.DB.Create(&newAdmin)
 
@@ -82,12 +83,6 @@ func LoginAuthentication(writer http.ResponseWriter, request *http.Request) {
 			return
 		}
 		var user models.User
-
-		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginForm.Password))
-		if err != nil {
-			http.Error(writer, "Invalid email or password", http.StatusUnauthorized)
-			return
-		}
 
 		db := db.Database.DB
 
@@ -131,12 +126,6 @@ func LoginAdmin(writer http.ResponseWriter, request *http.Request) {
 			return
 		}
 		var user models.Admin
-
-		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginForm.Password))
-		if err != nil {
-			http.Error(writer, "Invalid email or password", http.StatusUnauthorized)
-			return
-		}
 
 		db := db.Database.DB
 
