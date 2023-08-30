@@ -3,13 +3,14 @@ package db
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/codemunsta/risevest-test/src/models"
 	"github.com/go-redis/redis/v8"
 )
 
 var RedisClient *redis.Client = redis.NewClient(&redis.Options{
-	Addr: "localhost:6379",
+	Addr: "redis:6379",
 })
 
 type RedisSession struct {
@@ -87,5 +88,31 @@ func CreateAdminSession(authToken string, admin models.Admin) error {
 	} else {
 		err = RedisClient.Set(context.Background(), "AdminSession:"+session.AuthToken, string(sessionJSON), 600000000000).Err()
 		return err
+	}
+}
+
+func GetOrCreateFolderRedis(folder models.Folder) (models.Folder, error) {
+	folderString, err := RedisClient.Get(context.Background(), "folder:"+fmt.Sprintf("%v", folder.UserID)+folder.Name).Result()
+	if err == redis.Nil {
+		folderJson, err := json.Marshal(folder)
+		if err != nil {
+			var empty models.Folder
+			return empty, err
+		} else {
+			err = RedisClient.Set(context.Background(), "folder:"+fmt.Sprintf("%v", folder.UserID)+folder.Name, string(folderJson), 900000000000).Err()
+			return folder, err
+		}
+	} else if err != nil {
+		var empty models.Folder
+		return empty, err
+	} else {
+		var folder_ models.Folder
+		err2 := json.Unmarshal([]byte(folderString), &folder_)
+		if err2 != nil {
+			var empty models.Folder
+			return empty, err
+		} else {
+			return folder_, nil
+		}
 	}
 }

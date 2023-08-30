@@ -60,7 +60,7 @@ func RegisterAdmin(writer http.ResponseWriter, request *http.Request) {
 			return
 		}
 		newAdmin.Password = string(hashedPassword)
-		newAdmin.Role = "admin"
+		// newAdmin.Role = "admin"
 
 		db.Database.DB.Create(&newAdmin)
 
@@ -135,7 +135,7 @@ func LoginAdmin(writer http.ResponseWriter, request *http.Request) {
 				http.Error(writer, "User not found", http.StatusNotFound)
 				return
 			}
-			http.Error(writer, "Database error", http.StatusInternalServerError)
+			http.Error(writer, "Database error: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 

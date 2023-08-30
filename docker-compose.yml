@@ -23,6 +23,16 @@ services:
       - '5432:5432'
     volumes:
       - postgres-db:/var/lib/postgressql/data
+  
+  redis:
+    image: redis:latest
+    container_name: redis_risevest
+    restart: always
+    volumes:
+      - redis_volume_data:/data
+    ports:
+      - 6379:6379
 
 volumes:
   postgres-db:
+  redis_volume_data:

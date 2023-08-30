@@ -18,5 +18,5 @@ type Admin struct {
 	LastName  string `json:"lastname" gorm:"not null"`
 	Email     string `json:"email" gorm:"unique;not null"`
 	Password  string `json:"password" gorm:"not null"`
-	Role      string `json:"-" gorm:"type:enum('super_admin', 'admin')"`
+	// Role      string `json:"-" gorm:"type:enum('super_admin', 'admin')"`
 }
