@@ -64,7 +64,7 @@ func NotAuthenticated(writer http.ResponseWriter) {
 	json.NewEncoder(writer).Encode(response)
 }
 
-func isAuthenticatedAdmin(handler http.HandlerFunc) http.HandlerFunc {
+func IsAuthenticatedAdmin(handler http.HandlerFunc) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		authToken := request.Header.Get("Authorization")
 		if authToken == "" {

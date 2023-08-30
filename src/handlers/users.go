@@ -174,6 +174,33 @@ func FileDownload(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
+func DownloadFileCloudinary(writer http.ResponseWriter, request *http.Request) {
+	if request.Method == "GET" {
+
+		queryParams := request.URL.Query()
+		fileIDS := queryParams.Get("fileID")
+		fileID, err := strconv.Atoi(fileIDS)
+		if err != nil {
+			http.Error(writer, "Invalid file ID", http.StatusBadRequest)
+			return
+		}
+
+		// Fetch file information from the database
+		var file models.File
+		db := db.Database.DB
+		err = db.Where("id = ?", fileID).First(&file).Error
+		if err != nil {
+			http.Error(writer, "File not found", http.StatusNotFound)
+		}
+
+		// download
+		http.Redirect(writer, request, file.FilePath, http.StatusFound)
+	} else {
+		writer.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+}
+
 func uploadToCloudinary(filePath string, id uint, completed chan bool) {
 	cld, _ := cloudinary.NewFromURL(fmt.Sprintf("cloudinary://%v:%v@%v", os.Getenv("CLOUDINARY_API_KEY"), os.Getenv("CLOUDINARY_SECRET_KEY"), os.Getenv("CLOUDINARY_HOST")))
 	var ctx = context.Background()
@@ -217,10 +244,9 @@ func GetFolders(writer http.ResponseWriter, request *http.Request) {
 			http.Error(writer, "Folder not created", http.StatusNotFound)
 			return
 		}
-		folderJson, _ := json.Marshal(folders)
 		response := map[string]interface{}{
 			"message": "Here are your folders",
-			"data":    folderJson,
+			"data":    folders,
 		}
 		writer.WriteHeader(http.StatusOK)
 		json.NewEncoder(writer).Encode(response)
@@ -248,10 +274,9 @@ func GetFiles(writer http.ResponseWriter, request *http.Request) {
 			http.Error(writer, "An error occured", http.StatusInternalServerError)
 			return
 		}
-		filesJson, _ := json.Marshal(files)
 		response := map[string]interface{}{
 			"message": "Here are your files",
-			"data":    filesJson,
+			"data":    files,
 		}
 		writer.WriteHeader(http.StatusOK)
 		json.NewEncoder(writer).Encode(response)

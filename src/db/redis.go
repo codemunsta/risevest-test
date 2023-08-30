@@ -57,11 +57,11 @@ func CreateSession(authToken string, user models.User) error {
 	}
 }
 
-func GetAdminSession(authToken string) (RedisSession, bool) {
+func GetAdminSession(authToken string) (RedisAdminSession, bool) {
 	sessionJson, err := RedisClient.Get(context.Background(), "AdminSession:"+authToken).Result()
 
 	sessionFound := false
-	var session RedisSession
+	var session RedisAdminSession
 	if err == redis.Nil || err != nil {
 		sessionFound = false
 	} else {

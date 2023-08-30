@@ -26,8 +26,12 @@ func NewRouter() *mux.Router {
 	// files and folder
 	router.HandleFunc("/api/user/upload/file", mWare.IsAuthenticated(h.UploadFile)).Methods(http.MethodPost)
 	router.HandleFunc("/api/user/create/folder", mWare.IsAuthenticated(h.CreateFolder)).Methods(http.MethodPost)
-	router.HandleFunc("/api/user/download", h.FileDownload).Methods(http.MethodGet)
+	router.HandleFunc("/api/user/download", h.DownloadFileCloudinary).Methods(http.MethodGet)
 	router.HandleFunc("/api/user/get/folders", mWare.IsAuthenticated(h.GetFolders)).Methods(http.MethodGet)
 	router.HandleFunc("/api/user/get/files", mWare.IsAuthenticated(h.GetFiles)).Methods(http.MethodGet)
+
+	// admin
+	router.HandleFunc("/api/admin/get/files", mWare.IsAuthenticatedAdmin(h.AdminGetAllFiles)).Methods(http.MethodGet)
+	router.HandleFunc("/api/admin/mark/unsafe", mWare.IsAuthenticatedAdmin(h.AdminMarkFileUnsafe)).Methods(http.MethodPost)
 	return router
 }
