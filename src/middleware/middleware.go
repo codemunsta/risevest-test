@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strings"
 
@@ -10,7 +11,7 @@ import (
 	"github.com/codemunsta/risevest-test/src/utils"
 )
 
-func isAuthenticated(handler http.HandlerFunc) http.HandlerFunc {
+func IsAuthenticated(handler http.HandlerFunc) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		authToken := request.Header.Get("Authorization")
 		if authToken == "" {
@@ -20,12 +21,14 @@ func isAuthenticated(handler http.HandlerFunc) http.HandlerFunc {
 		// check token in redis
 		_, isFound := db.GetSession(authToken)
 		if !isFound {
+			log.Println("Hi didn't find redis session")
 			tokenString := strings.Replace(authToken, "Bearer ", "", 1)
 			userID, err := utils.ParseAuthToken(tokenString)
 			if err != nil {
 				NotAuthenticated(writer)
 			}
 
+			log.Println("Hi user authenticated")
 			var authuser models.User
 
 			database := db.Database.DB
@@ -38,6 +41,7 @@ func isAuthenticated(handler http.HandlerFunc) http.HandlerFunc {
 			if err == nil {
 				handler.ServeHTTP(writer, request)
 			} else {
+				log.Println(err)
 				response := map[string]interface{}{
 					"message": "An Error Occured",
 					"data":    nil,
@@ -60,7 +64,7 @@ func NotAuthenticated(writer http.ResponseWriter) {
 	json.NewEncoder(writer).Encode(response)
 }
 
-func isAuthenticatedAdmin(handler http.HandlerFunc) http.HandlerFunc {
+func IsAuthenticatedAdmin(handler http.HandlerFunc) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		authToken := request.Header.Get("Authorization")
 		if authToken == "" {

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	h "github.com/codemunsta/risevest-test/src/handlers"
+	mWare "github.com/codemunsta/risevest-test/src/middleware"
 	"github.com/gorilla/mux"
 )
 
@@ -21,5 +22,16 @@ func NewRouter() *mux.Router {
 	// login
 	router.HandleFunc("/api/user/login", h.LoginAuthentication).Methods(http.MethodPost)
 	router.HandleFunc("/api/admin/login", h.LoginAdmin).Methods(http.MethodPost)
+
+	// files and folder
+	router.HandleFunc("/api/user/upload/file", mWare.IsAuthenticated(h.UploadFile)).Methods(http.MethodPost)
+	router.HandleFunc("/api/user/create/folder", mWare.IsAuthenticated(h.CreateFolder)).Methods(http.MethodPost)
+	router.HandleFunc("/api/user/download", h.DownloadFileCloudinary).Methods(http.MethodGet)
+	router.HandleFunc("/api/user/get/folders", mWare.IsAuthenticated(h.GetFolders)).Methods(http.MethodGet)
+	router.HandleFunc("/api/user/get/files", mWare.IsAuthenticated(h.GetFiles)).Methods(http.MethodGet)
+
+	// admin
+	router.HandleFunc("/api/admin/get/files", mWare.IsAuthenticatedAdmin(h.AdminGetAllFiles)).Methods(http.MethodGet)
+	router.HandleFunc("/api/admin/mark/unsafe", mWare.IsAuthenticatedAdmin(h.AdminMarkFileUnsafe)).Methods(http.MethodPost)
 	return router
 }

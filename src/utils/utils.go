@@ -14,7 +14,7 @@ var jwtKey = []byte("rise_vise_test")
 func GenerateAuthToken(userID uint) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": userID,
-		"exp":     time.Now().Add(time.Hour * 24).Unix(), // Token expires in 24 hours
+		"exp":     time.Now().Add(time.Hour * 2).Unix(),
 	})
 
 	tokenString, err := token.SignedString(jwtKey)
