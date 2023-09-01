@@ -10,4 +10,4 @@ RUN go mod tidy
 
 EXPOSE 3000
 
-CMD [ "go", "run", "main.go" ]
+CMD [ "go", "run", "src/main.go" ]
