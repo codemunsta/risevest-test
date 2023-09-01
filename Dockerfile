@@ -1,13 +1,13 @@
 FROM golang:1.20-alpine
 
-COPY .env .env
+WORKDIR /app
 
-WORKDIR /usr/src/app
+COPY go.mod go.sum ./
 
-COPY . .
+RUN go mod download
 
-RUN go mod tidy
+COPY . ./
 
-EXPOSE 3000
+RUN go build -o main ./...
 
-CMD [ "go", "run", "src/main.go" ]
+ENTRYPOINT ["/app/main"]
