@@ -10,4 +10,8 @@ COPY . .
 
 RUN go mod tidy
 
+RUN go build -o rise-vest-test .
+
 EXPOSE 3000
+
+CMD [ "./rise-vest-test" ]
