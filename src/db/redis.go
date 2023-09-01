@@ -4,13 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/codemunsta/risevest-test/src/models"
 	"github.com/go-redis/redis/v8"
 )
 
 var RedisClient *redis.Client = redis.NewClient(&redis.Options{
-	Addr: "redis:6379",
+	Addr:     os.Getenv("REDIS_URL"),
+	Username: os.Getenv("REDISUSER"),
+	Password: os.Getenv("REDISPASSWORD"),
 })
 
 type RedisSession struct {

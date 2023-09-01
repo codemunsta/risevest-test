@@ -20,10 +20,11 @@ var Database DBInstance
 func InitDB() {
 	fmt.Println("Hey there")
 	dsn := fmt.Sprintf(
-		"host=db user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=Africa/Lagos",
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_NAME"),
+		"host=%s user=%s password=%s dbname=%s port=6247 sslmode=disable TimeZone=Africa/Lagos",
+		os.Getenv("PGHOST"),
+		os.Getenv("PGUSER"),
+		os.Getenv("PGPASSWORD"),
+		os.Getenv("PGDATABASE"),
 	)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
