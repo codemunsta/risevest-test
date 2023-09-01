@@ -1,13 +1,11 @@
 FROM golang:1.20-alpine
 
-WORKDIR /src
+WORKDIR /usr/src/app
 
-COPY ./src .
+COPY . .
 
-RUN go mod download
-
-RUN go build -o rise .
+RUN go mod tidy
 
 EXPOSE 3000
 
-CMD [ "./rise" ]
+CMD [ "go", "run", "src/main.go" ]
